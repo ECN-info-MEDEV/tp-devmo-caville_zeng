@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    extra.apply {
-        set("lifecycle_version", "2.6.2")
-    }
-}
-plugins {
-    id("com.android.application") version "8.1.2" apply false
-    id("com.android.library") version "8.1.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.10" apply false
+package com.example.cupcake.data
+
+import com.example.cupcake.R
+
+object DataSource {
+    val flavors = listOf(
+        R.string.vanilla,
+        R.string.chocolate,
+        R.string.red_velvet,
+        R.string.salted_caramel,
+        R.string.coffee
+    )
+
+    val quantityOptions = listOf(
+        Pair(R.string.one_cupcake, 1),
+        Pair(R.string.six_cupcakes, 6),
+        Pair(R.string.twelve_cupcakes, 12)
+    )
 }
