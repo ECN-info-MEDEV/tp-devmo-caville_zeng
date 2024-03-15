@@ -16,7 +16,7 @@
 package com.example.LearningApp.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.cupcake.data.OrderUiState
+import com.example.LearningApp.data.OrderUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,13 +33,13 @@ private const val PRICE_PER_CUPCAKE = 2.00
 private const val PRICE_FOR_SAME_DAY_PICKUP = 3.00
 
 /**
- * [OrderViewModel] holds information about a cupcake order in terms of quantity, flavor, and
+ * [StudyViewModel] holds information about a cupcake order in terms of quantity, flavor, and
  * pickup date. It also knows how to calculate the total price based on these order details.
  */
-class OrderViewModel : ViewModel() {
+class StudyViewModel : ViewModel() {
 
     /**
-     * Cupcake state for this order
+     * Learning state for this room
      */
     private val _uiState = MutableStateFlow(OrderUiState(pickupOptions = pickupOptions()))
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()

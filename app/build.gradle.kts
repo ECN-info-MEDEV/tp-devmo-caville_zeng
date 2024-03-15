@@ -19,11 +19,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.cupcake"
+    namespace = "com.example.LearningApp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.cupcake"
+        applicationId = "com.example.LearningApp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

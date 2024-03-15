@@ -35,10 +35,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cupcake.R
-import com.example.cupcake.data.OrderUiState
+import com.example.LearningApp.R
+import com.example.LearningApp.data.OrderUiState
 import com.example.LearningApp.ui.components.FormattedPriceLabel
-import com.example.cupcake.ui.theme.CupcakeTheme
+import com.example.LearningApp.ui.theme.LearningTheme
 
 /**
  * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]
@@ -124,7 +124,7 @@ fun OrderSummaryScreen(
 @Preview
 @Composable
 fun OrderSummaryPreview() {
-    CupcakeTheme {
+    LearningTheme {
         OrderSummaryScreen(
             orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
             onSendButtonClicked = { subject: String, summary: String -> },

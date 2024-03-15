@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.cupcake.ui.theme
+package com.example.LearningApp.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -95,7 +95,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun CupcakeTheme(
+fun LearningTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+ but turned off for training purposes
     dynamicColor: Boolean = false,

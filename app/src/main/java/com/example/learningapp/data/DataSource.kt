@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.cupcake.data
+package com.example.LearningApp.data
 
-import com.example.cupcake.R
+import com.example.LearningApp.R
 
 object DataSource {
     val flavors = listOf(

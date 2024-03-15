@@ -37,9 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cupcake.R
+import com.example.LearningApp.R
 import com.example.LearningApp.ui.components.FormattedPriceLabel
-import com.example.cupcake.ui.theme.CupcakeTheme
+import com.example.LearningApp.ui.theme.LearningTheme
 
 /**
  * Composable that displays the list of items as [RadioButton] options,
@@ -125,7 +125,7 @@ fun SelectOptionScreen(
 @Preview
 @Composable
 fun SelectOptionPreview() {
-    CupcakeTheme {
+    LearningTheme {
         SelectOptionScreen(
             subtotal = "299.99",
             options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
