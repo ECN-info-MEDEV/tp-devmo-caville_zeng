@@ -55,309 +55,428 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.LearningApp.R
-import com.example.learningapp.ui.theme.LearningTheme
+
+
+
 
 /**
  * Composable that allows the user to select the desired cupcake quantity and expects
  * [onNextButtonClicked] lambda that expects the selected quantity and triggers the navigation to
  * next screen
  */
+//@Composable
+//fun RoomSettingScreen(
+//    onNextButtonClicked: (Int) -> Unit,
+//    modifier: Modifier = Modifier
+//) {var isPrivate by remember { mutableStateOf(false) }
+//    var studyDuration by remember { mutableStateOf("") }
+//    var breakDuration by remember { mutableStateOf("") }
+//    var roomName by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") }
+//
+//    Scaffold(bottomBar = { BottomNavigationBar() }) { innerPadding ->
+//        Column(
+//            modifier = Modifier.padding(0.dp)
+//
+//        ) {
+//
+//            SearchBar()
+//            TaskList()
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Box(
+//                modifier = Modifier
+//                    .padding(0.dp)
+//                    .fillMaxWidth()
+//                    .border(
+//                        width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
+//                    )
+//            ) {
+//                Column {
+//                    LearningSettings(isPrivate,
+//                        onPrivateChange = { isPrivate = it },
+//                        studyDuration,
+//                        onStudyDurationChange = { studyDuration = it },
+//                        breakDuration,
+//                        onBreakDurationChange = { breakDuration = it },
+//                        roomName,
+//                        onRoomNameChange = { roomName = it },
+//                        password,
+//                        onPasswordChange = { password = it })
+//                    Column(
+//
+//                        modifier = Modifier
+//                            .padding(20.dp)
+//                            .border(
+//                                width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
+//                            ),
+//                    ) {
+//                        DurationField("Study duration", studyDuration, onValueChange = {})
+//                        Spacer(
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 20.dp)
+//                                .height(1.dp)
+//                                .background(color = BLUE1)
+//                        )
+//                        DurationField("Break time", breakDuration, onValueChange = {})
+//
+//                    }
+//                    Box(
+//                        contentAlignment = Alignment.Center,
+//                        modifier = Modifier
+//                            .padding(bottom = 10.dp)
+//                            .width(150.dp)
+//                            .height(50.dp)
+//                            .background(BLUE1, shape = RoundedCornerShape(15.dp))
+//
+//                            .align(Alignment.CenterHorizontally)
+//                    ) {
+//                        Text("Start", color = Color.White, fontSize = 20.sp)
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//@Composable
+//fun SearchBar() {
+//    var searchText by remember { mutableStateOf("") }
+//
+//    TextField(
+//        value = searchText,
+//        onValueChange = { searchText = it },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(20.dp)
+//            .height(45.dp),
+//
+//        leadingIcon = {
+//            Icon(Icons.Default.Search, contentDescription = null)
+//        },
+//        colors = TextFieldDefaults.textFieldColors(
+//            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent,
+//            disabledIndicatorColor = Color.Transparent,
+//        ),
+//        placeholder = {
+//            Text(
+//                "Search the information",
+//                fontSize = 12.sp,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .fillMaxHeight()
+//            )
+//        },
+//        singleLine = true,
+//        shape = RoundedCornerShape(30.dp)
+//    )
+//    Spacer(modifier = Modifier.height(16.dp))
+//}
+//
+//@Composable
+//fun TaskList() {
+//
+//    Text(
+//        "TODAY'S SCHEDULE",
+//        fontWeight = FontWeight.Bold,
+//        fontSize = 16.sp,
+//        modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp)
+//    )
+//    Spacer(modifier = Modifier.height(8.dp))
+//    CheckboxListItem(text = "Recite 30 English words")
+//    CheckboxListItem(text = "Listen to English for an hour")
+//}
+//
+//@Composable
+//fun CheckboxListItem(text: String) {
+//    var isChecked by remember { mutableStateOf(false) }
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.padding(5.dp, 0.dp, 5.dp, 0.dp)
+//    ) {
+//        Checkbox(checked = isChecked, onCheckedChange = { isChecked = it })
+//        Spacer(modifier = Modifier.width(5.dp))
+//        Text(text, fontSize = 12.sp, color = Color.Black)
+//    }
+//}
+//
+//@Composable
+//fun LearningSettings(
+//    isPrivate: Boolean,
+//    onPrivateChange: (Boolean) -> Unit,
+//    studyDuration: String,
+//    onStudyDurationChange: (String) -> Unit,
+//    breakDuration: String,
+//    onBreakDurationChange: (String) -> Unit,
+//    roomName: String,
+//    onRoomNameChange: (String) -> Unit,
+//    password: String,
+//    onPasswordChange: (String) -> Unit
+//) {
+//    Surface(
+//        modifier = Modifier
+//            .padding(20.dp)
+//            .border(
+//                width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
+//            ),
+//
+//        ) {
+//        Column(
+//            modifier = Modifier.padding(16.dp)
+//        ) {
+//            Text(
+//                "Learning settings",
+//                fontSize = 26.sp,
+//                fontWeight = FontWeight.Bold,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .wrapContentWidth(Alignment.CenterHorizontally)
+//            )
+//            Spacer(modifier = Modifier.height(8.dp))
+//            TextField(
+//                value = roomName,
+//                onValueChange = onRoomNameChange,
+//                placeholder = { Text("Enter the name of the study room") },
+//                colors = TextFieldDefaults.textFieldColors(
+//                    unfocusedIndicatorColor = Color.Transparent,
+//                    focusedIndicatorColor = Color.Transparent,
+//                    backgroundColor = Color.White,
+//                    disabledIndicatorColor = Color.Transparent,
+//                ),
+//                modifier = Modifier.background(color = Color.Transparent)
+//            )
+//            Spacer(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(1.dp)
+//                    .background(color = BLUE1)
+//            )
+//            Row(
+//                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Text("  Is it private?")
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(text = "Yes")
+//                Checkbox(checked = isPrivate, onCheckedChange = {
+//                    onPrivateChange(it)
+//                })
+//                Spacer(modifier = Modifier.width(8.dp))
+//                Text(text = "No")
+//                Checkbox(checked = !isPrivate, onCheckedChange = {
+//                    onPrivateChange(!it)
+//                })
+//
+//            }
+//            Spacer(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(1.dp)
+//                    .background(color = BLUE1)
+//            )
+//            if (isPrivate) {
+//                Spacer(modifier = Modifier.height(8.dp))
+//                PasswordField(password, onPasswordChange)
+//            }
+//
+//        }
+//    }
+//}
+//
+//@Composable
+//fun DurationField(label: String, value: String, onValueChange: (String) -> Unit) {
+//    OutlinedTextField(value = value,
+//        onValueChange = onValueChange,
+//        colors = TextFieldDefaults.textFieldColors(
+//            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent,
+//            backgroundColor = Color.White,
+//            disabledIndicatorColor = Color.Transparent,
+//        ),
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 20.dp),
+//        placeholder = { Text(label) },
+//        trailingIcon = {
+//            Row {
+//                Text(text = "...min", color = Color.Black)
+//                Image(
+//                    painter = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
+//                    contentDescription = ""
+//                )
+//            }
+//
+//        })
+//}
+//
+//@Composable
+//fun PasswordField(password: String, onPasswordChange: (String) -> Unit) {
+//    OutlinedTextField(
+//        value = password,
+//        colors = TextFieldDefaults.textFieldColors(
+//            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent,
+//            backgroundColor = Color.White,
+//            disabledIndicatorColor = Color.Transparent,
+//        ),
+//        onValueChange = onPasswordChange,
+//        placeholder = { Text("Enter Password") },
+//        visualTransformation = PasswordVisualTransformation()
+//    )
+//}
+//
+//@Composable
+//fun BottomNavigationBar() {
+//    var currentTab by remember {
+//        mutableStateOf(0)
+//    }
+//    val tabs = listOf(
+//        "Home" to R.drawable.ic_baseline_home_24,
+//        "Statistics" to R.drawable.ic_baseline_query_stats_24,
+//        "Creation" to R.drawable.ic_outline_add_box_24,
+//        "Settings" to R.drawable.ic_baseline_person_24
+//    )
+//    BottomNavigation(contentColor = Color.Black, backgroundColor = Color.White) {
+//        tabs.forEachIndexed { index, item ->
+//            BottomNavigationItem(
+//                icon = {
+//                    Image(
+//                        painter = painterResource(id = item.second),
+//                        contentDescription = ""
+//                    )
+//                }, label = {
+//                    Text(text = item.first)
+//                },
+//                selected = currentTab == index,
+//                onClick = {
+//                    currentTab = index
+//                }
+//            )
+//        }
+//
+//
+//    }
+//}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    MainScreen()
+//}
+
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+
 @Composable
-fun RoomSettingScreen(
-    onNextButtonClicked: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {var isPrivate by remember { mutableStateOf(false) }
-    var studyDuration by remember { mutableStateOf("") }
-    var breakDuration by remember { mutableStateOf("") }
-    var roomName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun RoomSettingScreen(studyViewModel: StudyViewModel, modifier: Modifier) {
+    val uiState = studyViewModel.uiState.collectAsState().value
 
-    Scaffold(bottomBar = { BottomNavigationBar() }) { innerPadding ->
-        Column(
-            modifier = Modifier.padding(0.dp)
-
-        ) {
-
-            SearchBar()
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            SearchBar(studyViewModel)
+            Spacer(modifier = Modifier.height(8.dp))
+            LearningSettings(studyViewModel.uiState, studyViewModel)
             TaskList()
             Spacer(modifier = Modifier.height(16.dp))
-            Box(
-                modifier = Modifier
-                    .padding(0.dp)
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
-                    )
-            ) {
-                Column {
-                    LearningSettings(isPrivate,
-                        onPrivateChange = { isPrivate = it },
-                        studyDuration,
-                        onStudyDurationChange = { studyDuration = it },
-                        breakDuration,
-                        onBreakDurationChange = { breakDuration = it },
-                        roomName,
-                        onRoomNameChange = { roomName = it },
-                        password,
-                        onPasswordChange = { password = it })
-                    Column(
-
-                        modifier = Modifier
-                            .padding(20.dp)
-                            .border(
-                                width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
-                            ),
-                    ) {
-                        DurationField("Study duration", studyDuration, onValueChange = {})
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp)
-                                .height(1.dp)
-                                .background(color = BLUE1)
-                        )
-                        DurationField("Break time", breakDuration, onValueChange = {})
-
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(bottom = 10.dp)
-                            .width(150.dp)
-                            .height(50.dp)
-                            .background(BLUE1, shape = RoundedCornerShape(15.dp))
-
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        Text("Start", color = Color.White, fontSize = 20.sp)
-                    }
-                }
-            }
+            StartButton()
         }
     }
 }
 
 @Composable
-fun SearchBar() {
+fun SearchBar(studyViewModel: StudyViewModel) {
     var searchText by remember { mutableStateOf("") }
-
     TextField(
         value = searchText,
         onValueChange = { searchText = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            .height(45.dp),
-
-        leadingIcon = {
-            Icon(Icons.Default.Search, contentDescription = null)
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-        ),
-        placeholder = {
-            Text(
-                "Search the information",
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            )
-        },
-        singleLine = true,
-        shape = RoundedCornerShape(30.dp)
+        label = { Text("Search") },
+        modifier = Modifier.fillMaxWidth()
     )
     Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
-fun TaskList() {
-
-    Text(
-        "TODAY'S SCHEDULE",
-        fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
-        modifier = Modifier.padding(20.dp, 0.dp, 20.dp, 0.dp)
-    )
-    Spacer(modifier = Modifier.height(8.dp))
-    CheckboxListItem(text = "Recite 30 English words")
-    CheckboxListItem(text = "Listen to English for an hour")
-}
-
-@Composable
-fun CheckboxListItem(text: String) {
-    var isChecked by remember { mutableStateOf(false) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(5.dp, 0.dp, 5.dp, 0.dp)
-    ) {
-        Checkbox(checked = isChecked, onCheckedChange = { isChecked = it })
-        Spacer(modifier = Modifier.width(5.dp))
-        Text(text, fontSize = 12.sp, color = Color.Black)
-    }
-}
-
-@Composable
-fun LearningSettings(
-    isPrivate: Boolean,
-    onPrivateChange: (Boolean) -> Unit,
-    studyDuration: String,
-    onStudyDurationChange: (String) -> Unit,
-    breakDuration: String,
-    onBreakDurationChange: (String) -> Unit,
-    roomName: String,
-    onRoomNameChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit
-) {
-    Surface(
-        modifier = Modifier
-            .padding(20.dp)
-            .border(
-                width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
-            ),
-
-        ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                "Learning settings",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentWidth(Alignment.CenterHorizontally)
+fun LearningSettings(studyViewModel: StudyViewModel) {
+    Column {
+        TextField(
+            value = uiState.roomName,
+            onValueChange = { studyViewModel.updateRoomName(it) },
+            label = { Text("Room Name") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Private")
+            Checkbox(
+                checked = uiState.isPrivate,
+                onCheckedChange = { studyViewModel.updateIsPrivate(it) }
             )
+        }
+        if (uiState.isPrivate) {
             Spacer(modifier = Modifier.height(8.dp))
             TextField(
-                value = roomName,
-                onValueChange = onRoomNameChange,
-                placeholder = { Text("Enter the name of the study room") },
-                colors = TextFieldDefaults.textFieldColors(
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    backgroundColor = Color.White,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
-                modifier = Modifier.background(color = Color.Transparent)
-            )
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(color = BLUE1)
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("  Is it private?")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Yes")
-                Checkbox(checked = isPrivate, onCheckedChange = {
-                    onPrivateChange(it)
-                })
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "No")
-                Checkbox(checked = !isPrivate, onCheckedChange = {
-                    onPrivateChange(!it)
-                })
-
-            }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(color = BLUE1)
-            )
-            if (isPrivate) {
-                Spacer(modifier = Modifier.height(8.dp))
-                PasswordField(password, onPasswordChange)
-            }
-
-        }
-    }
-}
-
-@Composable
-fun DurationField(label: String, value: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(value = value,
-        onValueChange = onValueChange,
-        colors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            backgroundColor = Color.White,
-            disabledIndicatorColor = Color.Transparent,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        placeholder = { Text(label) },
-        trailingIcon = {
-            Row {
-                Text(text = "...min", color = Color.Black)
-                Image(
-                    painter = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
-                    contentDescription = ""
-                )
-            }
-
-        })
-}
-
-@Composable
-fun PasswordField(password: String, onPasswordChange: (String) -> Unit) {
-    OutlinedTextField(
-        value = password,
-        colors = TextFieldDefaults.textFieldColors(
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            backgroundColor = Color.White,
-            disabledIndicatorColor = Color.Transparent,
-        ),
-        onValueChange = onPasswordChange,
-        placeholder = { Text("Enter Password") },
-        visualTransformation = PasswordVisualTransformation()
-    )
-}
-
-@Composable
-fun BottomNavigationBar() {
-    var currentTab by remember {
-        mutableStateOf(0)
-    }
-    val tabs = listOf(
-        "Home" to R.drawable.ic_baseline_home_24,
-        "Statistics" to R.drawable.ic_baseline_query_stats_24,
-        "Creation" to R.drawable.ic_outline_add_box_24,
-        "Settings" to R.drawable.ic_baseline_person_24
-    )
-    BottomNavigation(contentColor = Color.Black, backgroundColor = Color.White) {
-        tabs.forEachIndexed { index, item ->
-            BottomNavigationItem(
-                icon = {
-                    Image(
-                        painter = painterResource(id = item.second),
-                        contentDescription = ""
-                    )
-                }, label = {
-                    Text(text = item.first)
-                },
-                selected = currentTab == index,
-                onClick = {
-                    currentTab = index
-                }
+                value = uiState.password,
+                onValueChange = { studyViewModel.updatePassword(it) },
+                label = { Text("Password") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-
-
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = uiState.studyDuration,
+            onValueChange = { studyViewModel.updateStudyDuration(it) },
+            label = { Text("Study Duration (min)") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = uiState.breakDuration,
+            onValueChange = { studyViewModel.updateBreakDuration(it) },
+            label = { Text("Break Duration (min)") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    MainScreen()
+fun TaskList() {
+    Column {
+        Text("Today's Tasks", style = MaterialTheme.typography.h6, modifier = Modifier.padding(8.dp))
+
+        ListItem("Recite 30 English words")
+        ListItem("Listen to English for an hour")
+    }
+}
+
+@Composable
+fun ListItem(text: String) {
+    Row(modifier = Modifier.padding(8.dp)) {
+        Checkbox(
+            checked = false, // 这里可以绑定实际的状态
+            onCheckedChange = {},
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
+        Text(text, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun StartButton() {
+    Button(
+        onClick = {  },
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text("Start Studying", style = MaterialTheme.typography.button)
+    }
 }
