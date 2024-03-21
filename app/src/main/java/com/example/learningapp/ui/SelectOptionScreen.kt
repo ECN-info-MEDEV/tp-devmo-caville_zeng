@@ -39,7 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.LearningApp.R
 import com.example.LearningApp.ui.components.FormattedPriceLabel
-import com.example.LearningApp.ui.theme.LearningTheme
+import com.example.learningapp.ui.theme.LearningTheme
 
 /**
  * Composable that displays the list of items as [RadioButton] options,

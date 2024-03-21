@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.LearningApp.ui
+package com.example.learningapp.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.LearningApp.R
 import com.example.LearningApp.data.OrderUiState
 import com.example.LearningApp.ui.components.FormattedPriceLabel
-import com.example.LearningApp.ui.theme.LearningTheme
+import com.example.learningapp.ui.theme.LearningTheme
 
 /**
  * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.LearningApp.ui
+package com.example.learningapp.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.LearningApp.data.OrderUiState
+import com.example.learningapp.data.StudyUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,54 +26,49 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-/** Price for a single cupcake */
-private const val PRICE_PER_CUPCAKE = 2.00
-
-/** Additional cost for same day pickup of an order */
-private const val PRICE_FOR_SAME_DAY_PICKUP = 3.00
+/** Duration before break */
+private const val DURATION_BEFORE_BREAK = 60
 
 /**
- * [StudyViewModel] holds information about a cupcake order in terms of quantity, flavor, and
- * pickup date. It also knows how to calculate the total price based on these order details.
+ * [StudyViewModel] holds information about a study session.
  */
 class StudyViewModel : ViewModel() {
 
     /**
      * Learning state for this room
      */
-    private val _uiState = MutableStateFlow(OrderUiState(pickupOptions = pickupOptions()))
-    val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(StudyUiState())
+    val uiState: StateFlow<StudyUiState> = _uiState.asStateFlow()
 
     /**
-     * Set the quantity [numberCupcakes] of cupcakes for this order's state and update the price
+     * Set the study duration for this order's state
      */
-    fun setQuantity(numberCupcakes: Int) {
+    fun setStudyTime(durationStudy: Int) {
         _uiState.update { currentState ->
             currentState.copy(
-                quantity = numberCupcakes,
-                price = calculatePrice(quantity = numberCupcakes)
+                studyTime = durationStudy
             )
         }
     }
 
     /**
-     * Set the [desiredFlavor] of cupcakes for this order's state.
-     * Only 1 flavor can be selected for the whole order.
+     * Set the break duration for this order's state
      */
-    fun setFlavor(desiredFlavor: String) {
+    fun setBreakTime(durationBreak: Int) {
         _uiState.update { currentState ->
-            currentState.copy(flavor = desiredFlavor)
+            currentState.copy(
+                breakTime = durationBreak
+            )
         }
     }
 
     /**
-     * Set the [pickupDate] for this order's state and update the price
+     * Set the room state (public or private) for this order's state
      */
-    fun setDate(pickupDate: String) {
+    fun setRoomState(isPublic: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(
-                date = pickupDate,
-                price = calculatePrice(pickupDate = pickupDate)
+                isPublic=isPublic
             )
         }
     }
@@ -82,37 +77,6 @@ class StudyViewModel : ViewModel() {
      * Reset the order state
      */
     fun resetOrder() {
-        _uiState.value = OrderUiState(pickupOptions = pickupOptions())
-    }
-
-    /**
-     * Returns the calculated price based on the order details.
-     */
-    private fun calculatePrice(
-        quantity: Int = _uiState.value.quantity,
-        pickupDate: String = _uiState.value.date
-    ): String {
-        var calculatedPrice = quantity * PRICE_PER_CUPCAKE
-        // If the user selected the first option (today) for pickup, add the surcharge
-        if (pickupOptions()[0] == pickupDate) {
-            calculatedPrice += PRICE_FOR_SAME_DAY_PICKUP
-        }
-        val formattedPrice = NumberFormat.getCurrencyInstance().format(calculatedPrice)
-        return formattedPrice
-    }
-
-    /**
-     * Returns a list of date options starting with the current date and the following 3 dates.
-     */
-    private fun pickupOptions(): List<String> {
-        val dateOptions = mutableListOf<String>()
-        val formatter = SimpleDateFormat("E MMM d", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        // add current date and the following 3 dates.
-        repeat(4) {
-            dateOptions.add(formatter.format(calendar.time))
-            calendar.add(Calendar.DATE, 1)
-        }
-        return dateOptions
+        _uiState.value = StudyUiState()
     }
 }

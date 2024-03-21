@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.LearningApp
+package com.example.learningapp
 
-import android.content.Context
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,25 +33,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.LearningApp.ui.StudyViewModel
+import com.example.learningapp.ui.StudyViewModel
 import androidx.navigation.compose.NavHost
 import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.navigation.compose.composable
-import com.example.LearningApp.data.DataSource
-import com.example.LearningApp.ui.OrderSummaryScreen
-import com.example.LearningApp.ui.SelectOptionScreen
-import com.example.LearningApp.ui.RoomSettingScreen
-import android.content.Intent
+import com.example.learningapp.ui.RoomSettingScreen
 import androidx.annotation.StringRes
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.LearningApp.R
 
 enum class LearningScreen(@StringRes val title: Int){
-    Start(title = R.string.app_name),
-    Flavor(title = R.string.choose_flavor),
-    Pickup(title = R.string.choose_pickup_date),
-    Summary(title = R.string.order_summary)
+    Setting(title = R.string.app_name),
+    SingleRoom(title=R.string.single_room)
 }
 /**
  * Composable that displays the topBar and displays back button if back navigation is possible.
@@ -91,7 +83,7 @@ fun LearningApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = LearningScreen.valueOf(
-        backStackEntry?.destination?.route ?: LearningScreen.Start.name
+        backStackEntry?.destination?.route ?: LearningScreen.Setting.name
     )
     Scaffold(
         topBar = {
@@ -104,85 +96,21 @@ fun LearningApp(
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
         NavHost(
-            navController =navController,
-            startDestination = LearningScreen.Start.name,
+            navController = navController,
+            startDestination = LearningScreen.Setting.name,
             modifier = Modifier.padding(innerPadding)
-        ){
-            composable(route=LearningScreen.Start.name){
-               RoomSettingScreen(quantityOptions = DataSource.quantityOptions,
+        ) {
+            composable(route = LearningScreen.Setting.name) {
+                RoomSettingScreen(
                     onNextButtonClicked = {
                         viewModel.setQuantity(it)
-                        navController.navigate(LearningScreen.Flavor.name)
+                        navController.navigate(LearningScreen.SingleRoom.name)
                     },
-                    modifier= Modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium))
                 )
             }
-            composable(route=LearningScreen.Flavor.name){
-                val context =LocalContext.current
-                SelectOptionScreen(
-                    subtotal = uiState.price,
-                    onNextButtonClicked = { navController.navigate(LearningScreen.Pickup.name) },
-                    onCancelButtonClicked = {
-                        cancelOrderAndNavigateToStart(viewModel, navController)
-                    },
-                    options = DataSource.flavors.map { id -> context.resources.getString(id) },
-                    onSelectionChanged = { viewModel.setFlavor(it) },
-                    modifier = Modifier.fillMaxHeight()
-                )
-            }
-            composable(route=LearningScreen.Pickup.name){
-                SelectOptionScreen(
-                    subtotal = uiState.price,
-                    onNextButtonClicked = { navController.navigate(LearningScreen.Summary.name) },
-                    onCancelButtonClicked = {
-                        cancelOrderAndNavigateToStart(viewModel, navController)
-                    },
-                    options = uiState.pickupOptions,
-                    onSelectionChanged = { viewModel.setDate(it) },
-                    modifier = Modifier.fillMaxHeight()
-                )
-
-            }
-            composable(route=LearningScreen.Summary.name){
-                val context = LocalContext.current
-
-                OrderSummaryScreen(
-                    orderUiState = uiState,
-                    onCancelButtonClicked = {
-                        cancelOrderAndNavigateToStart(viewModel, navController)
-                    },
-                    onSendButtonClicked = { subject: String, summary: String ->
-                        shareOrder(context, subject = subject, summary = summary)
-                    },
-                    modifier = Modifier.fillMaxHeight()
-                )
-
-            }
         }
     }
-}
-
-private fun cancelOrderAndNavigateToStart(
-    viewModel: StudyViewModel,
-    navController: NavHostController
-) {
-    viewModel.resetOrder()
-    navController.popBackStack(LearningScreen.Start.name, inclusive = false)
-}
-
-private fun shareOrder(context: Context, subject: String, summary: String) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, subject)
-        putExtra(Intent.EXTRA_TEXT, summary)
-
-    }
-    context.startActivity(
-        Intent.createChooser(
-            intent,
-            context.getString(R.string.new_cupcake_order)
-        )
-    )
 }

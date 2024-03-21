@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.LearningApp.ui
+package com.example.learningapp.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -38,8 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.LearningApp.R
-import com.example.LearningApp.data.DataSource
-import com.example.LearningApp.ui.theme.LearningTheme
+import com.example.learningapp.ui.theme.LearningTheme
 
 /**
  * Composable that allows the user to select the desired cupcake quantity and expects
@@ -48,8 +47,7 @@ import com.example.LearningApp.ui.theme.LearningTheme
  */
 @Composable
 fun RoomSettingScreen(
-    quantityOptions: List<Pair<Int, Int>>,
-    onNextButtonClicked:(Int) ->Unit,
+    onNextButtonClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -114,7 +112,6 @@ fun SelectQuantityButton(
 fun RoomSettingPreview() {
     LearningTheme {
         RoomSettingScreen(
-            quantityOptions = DataSource.quantityOptions,
             onNextButtonClicked = {},
             modifier = Modifier
                 .fillMaxSize()
