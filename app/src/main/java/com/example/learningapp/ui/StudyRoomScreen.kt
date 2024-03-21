@@ -28,6 +28,10 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,98 +42,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.LearningApp.R
 import com.example.LearningApp.data.OrderUiState
 import com.example.LearningApp.ui.components.FormattedPriceLabel
+import com.example.learningapp.data.StudyUiState
 import com.example.learningapp.ui.theme.LearningTheme
+import kotlinx.coroutines.flow.stateIn
 
 /**
- * This composable expects [orderUiState] that represents the order state, [onCancelButtonClicked]
- * lambda that triggers canceling the order and passes the final order to [onSendButtonClicked]
- * lambda
+ * This is the composable for the study room screen
  */
 @Composable
-fun OrderSummaryScreen(
-    orderUiState: OrderUiState,
-    onCancelButtonClicked: () -> Unit,
-    onSendButtonClicked: (String, String) -> Unit,
-
+fun StudyRoomScreen(
+    studyViewModel: StudyViewModel,
     modifier: Modifier = Modifier
 ) {
+    var isPrivate=studyViewModel.uiState.studyDuration
+    var studyDuration by remember { mutableStateOf("") }
+    var breakDuration by remember { mutableStateOf("") }
+    var roomName by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     val resources = LocalContext.current.resources
 
-    val numberOfCupcakes = resources.getQuantityString(
-        R.plurals.cupcakes,
-        orderUiState.quantity,
-        orderUiState.quantity
-    )
     //Load and format a string resource with the parameters.
-    val orderSummary = stringResource(
-        R.string.order_details,
-        numberOfCupcakes,
-        orderUiState.flavor,
-        orderUiState.date,
-        orderUiState.quantity
-    )
-    val newOrder = stringResource(R.string.new_cupcake_order)
-    //Create a list of order summary to display
-    val items = listOf(
-        // Summary line 1: display selected quantity
-        Pair(stringResource(R.string.quantity), numberOfCupcakes),
-        // Summary line 2: display selected flavor
-        Pair(stringResource(R.string.flavor), orderUiState.flavor),
-        // Summary line 3: display selected pickup date
-        Pair(stringResource(R.string.pickup_date), orderUiState.date)
+    val studyInfo = stringResource(
+        orderUiState.studyTime,
+        orderUiState.roomName,
+        orderUiState.breakTime,
+        orderUiState.isPublic,
     )
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
-        ) {
-            items.forEach { item ->
-                Text(item.first.uppercase())
-                Text(text = item.second, fontWeight = FontWeight.Bold)
-                Divider(thickness = dimensionResource(R.dimen.thickness_divider))
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            FormattedPriceLabel(
-                subtotal = orderUiState.price,
-                modifier = Modifier.align(Alignment.End)
-            )
-        }
-        Row(
-            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { onSendButtonClicked(newOrder, orderSummary) }
-                ) {
-                    Text(stringResource(R.string.send))
-                }
-                OutlinedButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = onCancelButtonClicked
-                ) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
-        }
-    }
 }
 
 @Preview
 @Composable
-fun OrderSummaryPreview() {
-    LearningTheme {
-        OrderSummaryScreen(
-            orderUiState = OrderUiState(0, "Test", "Test", "$300.00"),
-            onSendButtonClicked = { subject: String, summary: String -> },
-            onCancelButtonClicked = {},
-            modifier = Modifier.fillMaxHeight()
-        )
-    }
+fun StudyRoomPreview() {
+    StudyRoomScreen(
+        studyUiState = StudyUiState(false,60,10,"My Room", "mypass"),
+        modifier = Modifier.fillMaxHeight()
+    )
 }

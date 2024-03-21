@@ -63,7 +63,7 @@ class StudyViewModel : ViewModel() {
     }
 
     /**
-     * Set the room state (public or private) for this order's state
+     * Set the room state (public or private)
      */
     fun setRoomState(isPublic: Boolean) {
         _uiState.update { currentState ->
@@ -72,6 +72,14 @@ class StudyViewModel : ViewModel() {
             )
         }
     }
+
+    /**
+     * Get study duration
+     */
+    fun getStudyDuration() {
+        uiState.studyTime
+    }
+
 
     /**
      * Reset the order state

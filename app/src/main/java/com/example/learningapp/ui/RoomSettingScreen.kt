@@ -64,6 +64,7 @@ import com.example.learningapp.ui.theme.LearningTheme
  */
 @Composable
 fun RoomSettingScreen(
+    studyViewModel: StudyViewModel,
     onNextButtonClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {var isPrivate by remember { mutableStateOf(false) }

@@ -42,6 +42,7 @@ import com.example.learningapp.ui.RoomSettingScreen
 import androidx.annotation.StringRes
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.LearningApp.R
+import com.example.learningapp.ui.StudyRoomScreen
 
 enum class LearningScreen(@StringRes val title: Int){
     Setting(title = R.string.app_name),
@@ -102,9 +103,18 @@ fun LearningApp(
         ) {
             composable(route = LearningScreen.Setting.name) {
                 RoomSettingScreen(
+                    studyViewModel=viewModel,
                     onNextButtonClicked = {
                         navController.navigate(LearningScreen.SingleRoom.name)
                     },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                )
+            }
+            composable(route = LearningScreen.SingleRoom.name) {
+                StudyRoomScreen(
+                    studyViewModel=viewModel,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.padding_medium))
