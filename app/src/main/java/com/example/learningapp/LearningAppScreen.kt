@@ -103,7 +103,6 @@ fun LearningApp(
             composable(route = LearningScreen.Setting.name) {
                 RoomSettingScreen(
                     onNextButtonClicked = {
-                        viewModel.setQuantity(it)
                         navController.navigate(LearningScreen.SingleRoom.name)
                     },
                     modifier = Modifier
