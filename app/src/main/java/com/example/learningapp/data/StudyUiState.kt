@@ -25,4 +25,9 @@ data class StudyUiState(
     val studyTime: Int = 0,
     /** Selected break duration in minutes */
     val breakTime: Int = 0,
-)
+    /** Selected room name */
+    val roomName: String = "",
+    /** Selected room password */
+    val roomPassword: String = "",
+
+    )
