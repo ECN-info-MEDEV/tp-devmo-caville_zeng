@@ -18,16 +18,23 @@ package com.example.learningapp.data
 /**
  * Data class that represents the current UI state in terms of [studyTime], [breakTime] and if it [isPublic]
  */
+//data class StudyUiState(
+//    /** Selected private or public room */
+//    val isPublic: Boolean = false,
+//    /** Selected study duration in minutes */
+//    val studyTime: Int = 0,
+//    /** Selected break duration in minutes */
+//    val breakTime: Int = 0,
+//    /** Selected room name */
+//    val roomName: String = "",
+//    /** Selected room password */
+//    val roomPassword: String = "",
+//
+//    )
 data class StudyUiState(
-    /** Selected private or public room */
-    val isPublic: Boolean = false,
-    /** Selected study duration in minutes */
-    val studyTime: Int = 0,
-    /** Selected break duration in minutes */
-    val breakTime: Int = 0,
-    /** Selected room name */
+    val isPrivate: Boolean = false,
+    val studyDuration: String = "",
+    val breakDuration: String = "",
     val roomName: String = "",
-    /** Selected room password */
-    val roomPassword: String = "",
-
-    )
+    val password: String = ""
+)
