@@ -266,8 +266,8 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
 }
 
 fun formatTime(seconds: Float): String {
-    val minutes = seconds/60
-    val remainingSeconds = seconds %60
+    val minutes = (seconds/60).toInt()
+    val remainingSeconds = (seconds %60).toInt()
     return String.format("%02d:%02d", minutes, remainingSeconds)
 }
 
@@ -288,7 +288,8 @@ fun BottomStudyBar(navController: NavController) {
                 icon = { Icon(painterResource(id = item.second), contentDescription = "image") },
                 label = { Text(text = item.first) },
                 selected = currentTab == index,
-                onClick = { currentTab = index }
+                onClick = { currentTab = index },
+                modifier = Modifier.size(24.dp)
             )
         }
     }

@@ -52,7 +52,6 @@ class StudyViewModel : ViewModel() {
 
 
     fun onStartStudyingClicked() {
-
         startTimer()
     }
 
