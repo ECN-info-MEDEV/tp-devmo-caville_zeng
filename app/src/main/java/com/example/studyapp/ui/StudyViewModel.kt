@@ -2,6 +2,7 @@ package com.example.studyapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -43,18 +44,17 @@ class StudyViewModel : ViewModel() {
     }
 
 
-    fun onStartStudyingClicked() {
-
-        startTimer()
-    }
-
-
 
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState
 
     private var timerJob: Job? = null
 
+
+    fun onStartStudyingClicked() {
+
+        startTimer()
+    }
 
     fun startTimer() {
 

@@ -80,7 +80,7 @@ fun LearningAppScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(LearningScreens.Home.name) { MainScreen(navController) }
-            composable(LearningScreens.Setting.name) { RoomSettingScreen(studyViewModel) }
+            composable(LearningScreens.Setting.name) { RoomSettingScreen(studyViewModel, navController) }
             composable(LearningScreens.SingleRoom.name) { StudyRoomScreen(studyViewModel) }
         }
     }

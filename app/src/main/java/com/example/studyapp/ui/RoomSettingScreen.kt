@@ -24,23 +24,29 @@ import com.example.studyapp.R
 import com.example.studyapp.ui.theme.BLUE1
 import com.example.studyapp.ui.theme.Blue500
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.studyapp.LearningScreens
+import com.example.studyapp.ui.StudyViewModel
+
 @Composable
-fun RoomSettingScreen(viewModel: StudyViewModel = viewModel()) {
-    SettingScreen(viewModel = viewModel)
+fun RoomSettingScreen(viewModel: StudyViewModel = viewModel(), navController: NavController= rememberNavController()) {
+    SettingScreen(studyViewModel = viewModel, navController)
 }
 @Composable
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-fun SettingScreen(viewModel: StudyViewModel) {
+fun SettingScreen(studyViewModel: StudyViewModel= viewModel(), navController: NavController= rememberNavController()) {
 
-    var isPrivate by remember { mutableStateOf(viewModel.uiState.value.isPrivate) }
-    var studyDuration by remember { mutableStateOf(viewModel.uiState.value.studyDuration) }
-    var breakDuration by remember { mutableStateOf(viewModel.uiState.value.breakDuration) }
-    var roomName by remember { mutableStateOf(viewModel.uiState.value.roomName) }
-    var password by remember { mutableStateOf(viewModel.uiState.value.password) }
+    val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
+    var isPrivate by remember { mutableStateOf(studyViewModel.uiState.value.isPrivate) }
+    var studyDuration by remember { mutableStateOf(studyViewModel.uiState.value.studyDuration) }
+    var breakDuration by remember { mutableStateOf(studyViewModel.uiState.value.breakDuration) }
+    var roomName by remember { mutableStateOf(studyViewModel.uiState.value.roomName) }
+    var password by remember { mutableStateOf(studyViewModel.uiState.value.password) }
 
     Checkbox(checked = isPrivate, onCheckedChange = {
         isPrivate = it
-        viewModel.onIsPrivateChanged(it)
+        studyViewModel.onIsPrivateChanged(it)
     })
 
     Scaffold(bottomBar = { BottomNavigationBar() }) { innerPadding ->
@@ -63,10 +69,6 @@ fun SettingScreen(viewModel: StudyViewModel) {
                 Column {
                     LearningSettings(isPrivate,
                         onPrivateChange = { isPrivate = it },
-                        studyDuration,
-                        onStudyDurationChange = { studyDuration = it },
-                        breakDuration,
-                        onBreakDurationChange = { breakDuration = it },
                         roomName,
                         onRoomNameChange = { roomName = it },
                         password,
@@ -79,7 +81,7 @@ fun SettingScreen(viewModel: StudyViewModel) {
                                 width = 1.dp, color = BLUE1, shape = RoundedCornerShape(10.dp)
                             ),
                     ) {
-                        DurationField("Study duration", studyDuration, onValueChange = {})
+                        DurationField("Study duration", studyDuration, onValueChange = { studyDuration = it })
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -87,7 +89,7 @@ fun SettingScreen(viewModel: StudyViewModel) {
                                 .height(1.dp)
                                 .background(color = BLUE1)
                         )
-                        DurationField("Break time", breakDuration, onValueChange = {})
+                        DurationField("Break time", breakDuration, onValueChange = { breakDuration = it })
 
                     }
                     Box(
@@ -96,11 +98,23 @@ fun SettingScreen(viewModel: StudyViewModel) {
                             .padding(bottom = 10.dp)
                             .width(150.dp)
                             .height(50.dp)
-                            .background(Blue500 ,shape = RoundedCornerShape(15.dp))
-
+                            .background(Blue500, shape = RoundedCornerShape(15.dp))
                             .align(CenterHorizontally)
                     ) {
-                        Text("Start", color = Color.White, fontSize = 20.sp)
+                        Button(
+                            onClick = {navController.navigate(LearningScreens.SingleRoom.name)},
+                            colors=buttonColors,
+                            modifier = Modifier
+                                .padding(bottom = 10.dp)
+                                .width(150.dp)
+                                .height(50.dp)
+                                .background(Blue500, shape = RoundedCornerShape(15.dp)))
+                        {
+                            Text(text="Start",
+                            color=Color.White,
+                            fontSize = 20.sp,
+                            )
+                        }
                     }
                 }
             }
@@ -119,7 +133,7 @@ fun SearchBar() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
-            .height(45.dp),
+            .height(50.dp),
 
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = null)
@@ -176,10 +190,6 @@ fun CheckboxListItem(text: String) {
 fun LearningSettings(
     isPrivate: Boolean,
     onPrivateChange: (Boolean) -> Unit,
-    studyDuration: String,
-    onStudyDurationChange: (String) -> Unit,
-    breakDuration: String,
-    onBreakDurationChange: (String) -> Unit,
     roomName: String,
     onRoomNameChange: (String) -> Unit,
     password: String,
@@ -255,9 +265,21 @@ fun LearningSettings(
 }
 
 @Composable
-fun DurationField(label: String, value: String, onValueChange: (String) -> Unit) {
-    OutlinedTextField(value = value,
-        onValueChange = onValueChange,
+fun DurationField(label: String, durationValue: String , onValueChange: (String) -> Unit) {
+    var previousValue by remember { mutableStateOf(durationValue) }
+    var inputValue by remember { mutableStateOf(durationValue) }
+
+    OutlinedTextField(
+        value = inputValue,
+        onValueChange = { newValue: String ->
+            if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
+                inputValue=newValue
+                onValueChange(newValue)
+                previousValue=newValue
+            } else{
+                inputValue=previousValue
+            }
+        },
         colors = TextFieldDefaults.textFieldColors(
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
@@ -270,11 +292,7 @@ fun DurationField(label: String, value: String, onValueChange: (String) -> Unit)
         placeholder = { Text(label) },
         trailingIcon = {
             Row {
-                Text(text = "...min", color = Color.Black)
-                Image(
-                    painter = painterResource(id = R.drawable.ic_baseline_keyboard_arrow_right_24),
-                    contentDescription = ""
-                )
+                Text(text = "minutes", color = Color.Black)
             }
 
         })

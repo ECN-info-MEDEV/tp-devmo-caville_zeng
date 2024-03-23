@@ -24,23 +24,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.studyapp.LearningScreens
 import com.example.studyapp.R
 import com.example.studyapp.ui.StudyViewModel
 import com.example.studyapp.ui.theme.Blue500
 @Composable
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel()) {
+fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel(), navController: NavController = rememberNavController()) {
     Scaffold(
         topBar = {
             CustomTopAppBar(
                 onBack = {
                     //Handle back press
+                    navController.navigate(LearningScreens.Setting.name)
                 },
                 onClose = {
                     //Handle close action
+                    navController.navigate(LearningScreens.Home.name)
                 }
             )
-        }
+        },
+        bottomBar = { BottomStudyBar(navController) }
     ) {innerPadding ->
         SingleStudyScreen(studyViewModel)
     }
@@ -85,7 +92,7 @@ fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
 }
 
 @Composable
-fun StudyRoomTitle() {
+fun StudyRoomTitle(viewModel: StudyViewModel, isPrivate: Boolean, roomName: String) {
 
     val imageResource = R.drawable.ic_profile
     val backgroundColor = Color(0xFFE0E0E0)
@@ -104,9 +111,11 @@ fun StudyRoomTitle() {
         )
 
         Text(
-            text = "Jack's private study room",
+            text=if (isPrivate) "Private Room "+roomName else "Public Room "+roomName,
             style = MaterialTheme.typography.subtitle1,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier=Modifier.fillMaxWidth(),
+            textAlign=TextAlign.Center
         )
     }
     Spacer(modifier = Modifier.height(16.dp))
@@ -162,15 +171,49 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 @Composable
 fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
+    var isPrivate by remember { mutableStateOf(viewModel.uiState.value.isPrivate) }
+    var studyDuration by remember { mutableStateOf(viewModel.uiState.value.studyDuration) }
+    var breakDuration by remember { mutableStateOf(viewModel.uiState.value.breakDuration) }
+    var roomName by remember { mutableStateOf(viewModel.uiState.value.roomName) }
+    var password by remember { mutableStateOf(viewModel.uiState.value.password) }
+    val timerState by viewModel.timerState.collectAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.startTimer()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        StudyRoomTitle()
+        StudyRoomTitle(viewModel, isPrivate, roomName)
         Spacer(modifier = Modifier.height(50.dp))
-        TimerProgressIndicator(progress = 0.7f, time = "10:40")
+
+        Box(contentAlignment = Alignment.Center) {
+            Canvas(modifier = Modifier.size(200.dp)) {
+
+                drawCircle(
+                    color = Color.LightGray,
+                    radius = size.minDimension / 2
+                )
+
+                val sweepAngle = 0.7f * 360f
+                drawArc(
+                    brush = SolidColor(Color.Blue),
+                    startAngle = -90f,
+                    sweepAngle = sweepAngle,
+                    useCenter = false,
+                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round),
+                    size = this.size
+                )
+            }
+            Text(
+                text = formatTime(timerState.progress),
+                style = MaterialTheme.typography.h4
+            )
+        }
 
         TimerControlButtons(viewModel = viewModel)
 
@@ -185,7 +228,7 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Total time spent: 2:20",
+                text = "Total time spent: "+timerState.totalTime,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.subtitle1.fontSize * 1.35
@@ -218,36 +261,39 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
                 Text("Rest")
             }
         }
+
     }
 }
 
+fun formatTime(seconds: Float): String {
+    val minutes = seconds/60
+    val remainingSeconds = seconds %60
+    return String.format("%02d:%02d", minutes, remainingSeconds)
+}
 
 @Composable
-fun TimerProgressIndicator(progress: Float, time: String) {
-    Box(contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.size(200.dp)) {
-
-            drawCircle(
-                color = Color.LightGray,
-                radius = size.minDimension / 2
-            )
-
-            val sweepAngle = progress * 360f
-            drawArc(
-                brush = SolidColor(Color.Blue),
-                startAngle = -90f,
-                sweepAngle = sweepAngle,
-                useCenter = false,
-                style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round),
-                size = this.size
+fun BottomStudyBar(navController: NavController) {
+    var currentTab by remember {
+        mutableStateOf(0)
+    }
+    val tabs = listOf(
+        "Home" to R.drawable.ic_baseline_home_24,
+        "Notes" to R.drawable.notes_svgrepo_com,
+        "Share" to R.drawable.add_friend_svgrepo_com,
+        "Settings" to R.drawable.ic_baseline_person_24
+    )
+    BottomNavigation(contentColor = Color.Black, backgroundColor = Color.White) {
+        tabs.forEachIndexed { index, item ->
+            BottomNavigationItem(
+                icon = { Icon(painterResource(id = item.second), contentDescription = "image") },
+                label = { Text(text = item.first) },
+                selected = currentTab == index,
+                onClick = { currentTab = index }
             )
         }
-        Text(
-            text = time,
-            style = MaterialTheme.typography.h4
-        )
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
