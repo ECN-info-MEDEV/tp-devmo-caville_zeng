@@ -81,7 +81,7 @@ fun LearningAppScreen(
         ) {
             composable(LearningScreens.Home.name) { MainScreen(navController) }
             composable(LearningScreens.Setting.name) { RoomSettingScreen(studyViewModel, navController) }
-            composable(LearningScreens.SingleRoom.name) { StudyRoomScreen(studyViewModel) }
+            composable(LearningScreens.SingleRoom.name) { StudyRoomScreen(studyViewModel, navController) }
         }
     }
 }

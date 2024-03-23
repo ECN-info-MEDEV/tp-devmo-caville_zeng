@@ -102,7 +102,13 @@ fun SettingScreen(studyViewModel: StudyViewModel= viewModel(), navController: Na
                             .align(CenterHorizontally)
                     ) {
                         Button(
-                            onClick = {navController.navigate(LearningScreens.SingleRoom.name)},
+                            onClick = {
+                                studyViewModel.onPrivateChanged(isPrivate)
+                                studyViewModel.onRoomNameChanged(roomName)
+                                studyViewModel.onPasswordChanged(password)
+                                studyViewModel.onStudyDurationChanged(studyDuration)
+                                studyViewModel.onBreakDurationChanged(breakDuration)
+                                navController.navigate(LearningScreens.SingleRoom.name)},
                             colors=buttonColors,
                             modifier = Modifier
                                 .padding(bottom = 10.dp)

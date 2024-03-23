@@ -3,8 +3,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -38,7 +40,7 @@ fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel(), navController:
         topBar = {
             CustomTopAppBar(
                 onBack = {
-                    //Handle back press
+                    //Handle back process
                     navController.navigate(LearningScreens.Setting.name)
                 },
                 onClose = {
@@ -48,7 +50,7 @@ fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel(), navController:
             )
         },
         bottomBar = { BottomStudyBar(navController) }
-    ) {innerPadding ->
+    ) {
         SingleStudyScreen(studyViewModel)
     }
 }
@@ -111,7 +113,7 @@ fun StudyRoomTitle(viewModel: StudyViewModel, isPrivate: Boolean, roomName: Stri
         )
 
         Text(
-            text=if (isPrivate) "Private Room "+roomName else "Public Room "+roomName,
+            text=if (isPrivate) "Private Room $roomName" else "Public Room $roomName",
             style = MaterialTheme.typography.subtitle1,
             fontWeight = FontWeight.Bold,
             modifier=Modifier.fillMaxWidth(),
@@ -265,10 +267,11 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
     }
 }
 
-fun formatTime(seconds: Float): String {
-    val minutes = (seconds/60).toInt()
-    val remainingSeconds = (seconds %60).toInt()
-    return String.format("%02d:%02d", minutes, remainingSeconds)
+fun formatTime(min: Float): String {
+    val seconds = (min*60).toInt()
+    val minutes = (min %60).toInt()
+    val hours = (min %3600).toInt()
+    return String.format("%02d:%02d:%02d", hours,minutes, seconds)
 }
 
 @Composable

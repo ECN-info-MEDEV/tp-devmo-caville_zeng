@@ -38,6 +38,9 @@ class StudyViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(roomName = name)
     }
 
+    fun onPrivateChanged(bool:Boolean) {
+        _uiState.value = _uiState.value.copy(isPrivate = bool)
+    }
 
     fun onPasswordChanged(password: String) {
         _uiState.value = _uiState.value.copy(password = password)
