@@ -1,4 +1,4 @@
-package com.example.studyapp.viewmodel
+package com.example.studyapp.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,13 +8,14 @@ import kotlinx.coroutines.launch
 import com.example.studyapp.data.StudyUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.asStateFlow
 
 class StudyViewModel : ViewModel() {
 
 
     private val _uiState = MutableStateFlow(StudyUiState())
 
-    val uiState: StateFlow<StudyUiState> = _uiState
+    val uiState: StateFlow<StudyUiState> = _uiState.asStateFlow()
 
 
     fun onIsPrivateChanged(isPrivate: Boolean) {

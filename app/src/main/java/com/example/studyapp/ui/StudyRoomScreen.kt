@@ -1,40 +1,35 @@
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Refresh
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studyapp.R
-import com.example.studyapp.viewmodel.StudyViewModel
-import com.example.studyapp.ui.theme.BLUE1
+import com.example.studyapp.ui.StudyViewModel
 import com.example.studyapp.ui.theme.Blue500
 @Composable
-fun StudyRoomScreen(viewModel: StudyViewModel = viewModel()) {
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel()) {
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -46,15 +41,14 @@ fun StudyRoomScreen(viewModel: StudyViewModel = viewModel()) {
                 }
             )
         }
-    ) {
-        MainScreen2(viewModel)
+    ) {innerPadding ->
+        SingleStudyScreen(studyViewModel)
     }
 }
 
 @Composable
 fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
     TopAppBar(
-        // 移除标题参数，我们将在内容中自定义标题的布局
         title = {},
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -166,7 +160,7 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 
 
 @Composable
-fun MainScreen2(viewModel: StudyViewModel) {
+fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
     Column(
         modifier = Modifier
@@ -181,8 +175,6 @@ fun MainScreen2(viewModel: StudyViewModel) {
         TimerControlButtons(viewModel = viewModel)
 
         Spacer(modifier = Modifier.height(50.dp))
-
-
 
         Box(
             modifier = Modifier

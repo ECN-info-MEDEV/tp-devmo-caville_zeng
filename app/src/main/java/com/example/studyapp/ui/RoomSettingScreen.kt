@@ -1,5 +1,6 @@
 package com.example.studyapp.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,19 +23,21 @@ import androidx.compose.ui.unit.sp
 import com.example.studyapp.R
 import com.example.studyapp.ui.theme.BLUE1
 import com.example.studyapp.ui.theme.Blue500
-import com.example.studyapp.viewmodel.StudyViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun RoomSettingScreen(viewModel: StudyViewModel = viewModel()) {
-    MainScreen(viewModel = viewModel)
+    SettingScreen(viewModel = viewModel)
 }
 @Composable
-fun MainScreen(viewModel: StudyViewModel) {
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+fun SettingScreen(viewModel: StudyViewModel) {
+
     var isPrivate by remember { mutableStateOf(viewModel.uiState.value.isPrivate) }
     var studyDuration by remember { mutableStateOf(viewModel.uiState.value.studyDuration) }
     var breakDuration by remember { mutableStateOf(viewModel.uiState.value.breakDuration) }
     var roomName by remember { mutableStateOf(viewModel.uiState.value.roomName) }
     var password by remember { mutableStateOf(viewModel.uiState.value.password) }
+
     Checkbox(checked = isPrivate, onCheckedChange = {
         isPrivate = it
         viewModel.onIsPrivateChanged(it)
