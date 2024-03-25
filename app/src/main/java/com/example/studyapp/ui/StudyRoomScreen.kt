@@ -35,26 +35,27 @@ import com.example.studyapp.ui.theme.BLUE1
 import com.example.studyapp.ui.theme.Blue500
 @Composable
 fun StudyRoomScreen(viewModel: StudyViewModel = viewModel()) {
+
+    val timerState = viewModel.timerState.collectAsState().value
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
                 onBack = {
-                    //Handle back press
                 },
                 onClose = {
-                    //Handle close action
                 }
             )
         }
     ) {
-        MainScreen2(viewModel)
+        MainScreen2(viewModel, timerState)
     }
 }
 
 @Composable
 fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
     TopAppBar(
-        // 移除标题参数，我们将在内容中自定义标题的布局
+
         title = {},
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -73,7 +74,7 @@ fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h6.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.h6.fontSize * 1.2 // 增加20%的字号大小
+                    fontSize = MaterialTheme.typography.h6.fontSize * 1.2
                 )
             )
             Spacer(Modifier.weight(1f, true))
@@ -131,34 +132,25 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
             Image(
                 painter = painterResource(id = R.drawable.ic_reset),
                 contentDescription = "Reset Timer",
-                modifier = Modifier
-                    .size(100.dp)
-
-                    .padding(12.dp)
+                modifier = Modifier.size(100.dp).padding(12.dp)
             )
         }
 
 
-        IconButton(onClick = {  }) {
+        IconButton(onClick = { viewModel.pauseTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_pause),
                 contentDescription = "Pause Timer",
-                modifier = Modifier
-                    .size(100.dp)
-
-                    .padding(12.dp)
+                modifier = Modifier.size(100.dp).padding(12.dp)
             )
         }
 
 
-        IconButton(onClick = { }) {
+        IconButton(onClick = { viewModel.startTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_repeat),
-                contentDescription = "Repeat Timer",
-                modifier = Modifier
-                    .size(96.dp)
-
-                    .padding(12.dp)
+                contentDescription = "Start/Continue Timer",
+                modifier = Modifier.size(100.dp).padding(12.dp)
             )
         }
     }
@@ -166,7 +158,7 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 
 
 @Composable
-fun MainScreen2(viewModel: StudyViewModel) {
+fun MainScreen2(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState) {
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
     Column(
         modifier = Modifier
@@ -176,7 +168,7 @@ fun MainScreen2(viewModel: StudyViewModel) {
     ) {
         StudyRoomTitle()
         Spacer(modifier = Modifier.height(50.dp))
-        TimerProgressIndicator(progress = 0.7f, time = "10:40")
+        TimerProgressIndicator(progress = timerState.progress, time = timerState.totalTime)
 
         TimerControlButtons(viewModel = viewModel)
 
