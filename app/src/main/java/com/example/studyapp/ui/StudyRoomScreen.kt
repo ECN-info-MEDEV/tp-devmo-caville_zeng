@@ -159,7 +159,20 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 
 @Composable
 fun MainScreen2(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState) {
+    val studyDurationMinutes = viewModel.uiState.collectAsState().value.studyDuration.toFloatOrNull() ?: 0f
+
+    val studyDurationMillis = (studyDurationMinutes * 60 * 1000).toLong()
+
+    val timeSpentMillis = studyDurationMillis - timerState.timeInMillis
+
+    val totalTimeSpentMillis = if (timeSpentMillis > 0) timeSpentMillis else 0L
+
+
+    val minutesSpent = totalTimeSpentMillis / 60000
+    val secondsSpent = (totalTimeSpentMillis % 60000) / 1000
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -185,7 +198,7 @@ fun MainScreen2(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Total time spent: 2:20",
+                text = "Total time spent: ${minutesSpent.formatTime()}:${secondsSpent.formatTime()}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.subtitle1.fontSize * 1.35
@@ -220,7 +233,7 @@ fun MainScreen2(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState
         }
     }
 }
-
+fun Long.formatTime(): String = this.toString().padStart(2, '0')
 
 @Composable
 fun TimerProgressIndicator(progress: Float, time: String) {
