@@ -51,6 +51,23 @@ class StudyViewModel : ViewModel() {
 
     fun startTimer() {
 
+        timerJob = viewModelScope.launch {
+            val studyDurationMillis = _uiState.value.studyDuration.toLongOrNull()?.times(60 * 1000) ?: 0L
+            val startTime = System.currentTimeMillis()
+            val endTime = startTime + studyDurationMillis
+
+            _timerState.value = _timerState.value.copy(startTime = startTime, duration = studyDurationMillis, isRunning = true)
+
+            while (System.currentTimeMillis() < endTime) {
+                val currentTime = System.currentTimeMillis()
+                _timerState.value = _timerState.value.copy(timeInMillis = currentTime - startTime)
+                delay(1000)
+            }
+        }
+    }
+
+    fun restartTimer() {
+
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             val studyDurationMillis = _uiState.value.studyDuration.toLongOrNull()?.times(60 * 1000) ?: 0L

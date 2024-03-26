@@ -146,18 +146,17 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
                 painter = painterResource(id = R.drawable.ic_reset),
                 contentDescription = "Reset Timer",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .padding(12.dp)
             )
         }
-
 
         IconButton(onClick = { viewModel.pauseTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_pause),
                 contentDescription = "Pause Timer",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(90.dp)
                     .padding(12.dp)
             )
         }
@@ -165,10 +164,20 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 
         IconButton(onClick = { viewModel.startTimer() }) {
             Image(
+                painter = painterResource(id = R.drawable.ic_play),
+                contentDescription = "Play Timer",
+                modifier = Modifier
+                    .size(90.dp)
+                    .padding(12.dp)
+            )
+        }
+
+        IconButton(onClick = { viewModel.restartTimer() }) {
+            Image(
                 painter = painterResource(id = R.drawable.ic_repeat),
                 contentDescription = "Start/Continue Timer",
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(80.dp)
                     .padding(12.dp)
             )
         }
