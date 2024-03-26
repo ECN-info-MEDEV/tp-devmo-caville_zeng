@@ -3,26 +3,30 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -32,10 +36,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.studyapp.LearningScreens
 import com.example.studyapp.R
 import com.example.studyapp.ui.StudyViewModel
+import com.example.studyapp.ui.theme.BLUE1
 import com.example.studyapp.ui.theme.Blue500
-@Composable
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel(), navController: NavController = rememberNavController()) {
+@Composable
+fun StudyRoomScreen(viewModel: StudyViewModel = viewModel(), navController: NavController= rememberNavController()) {
+
+    val timerState = viewModel.timerState.collectAsState().value
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -51,13 +59,14 @@ fun StudyRoomScreen(studyViewModel: StudyViewModel = viewModel(), navController:
         },
         bottomBar = { BottomStudyBar(navController) }
     ) {
-        SingleStudyScreen(studyViewModel)
+        SingleRoomScreen(viewModel, timerState)
     }
 }
 
 @Composable
 fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
     TopAppBar(
+
         title = {},
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -76,7 +85,7 @@ fun CustomTopAppBar(onBack: () -> Unit, onClose: () -> Unit) {
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h6.copy(
                     fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.h6.fontSize * 1.2 // 增加20%的字号大小
+                    fontSize = MaterialTheme.typography.h6.fontSize * 1.2
                 )
             )
             Spacer(Modifier.weight(1f, true))
@@ -138,31 +147,28 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
                 contentDescription = "Reset Timer",
                 modifier = Modifier
                     .size(100.dp)
-
                     .padding(12.dp)
             )
         }
 
 
-        IconButton(onClick = {  }) {
+        IconButton(onClick = { viewModel.pauseTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_pause),
                 contentDescription = "Pause Timer",
                 modifier = Modifier
                     .size(100.dp)
-
                     .padding(12.dp)
             )
         }
 
 
-        IconButton(onClick = { }) {
+        IconButton(onClick = { viewModel.startTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_repeat),
-                contentDescription = "Repeat Timer",
+                contentDescription = "Start/Continue Timer",
                 modifier = Modifier
-                    .size(96.dp)
-
+                    .size(100.dp)
                     .padding(12.dp)
             )
         }
@@ -171,7 +177,18 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 
 
 @Composable
-fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
+fun SingleRoomScreen(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState) {
+    val studyDurationMinutes = viewModel.uiState.collectAsState().value.studyDuration.toFloatOrNull() ?: 0f
+
+    val studyDurationMillis = (studyDurationMinutes * 60 * 1000).toLong()
+
+    val timeSpentMillis = studyDurationMillis - timerState.timeInMillis
+
+    val totalTimeSpentMillis = if (timeSpentMillis > 0) timeSpentMillis else 0L
+
+
+    val minutesSpent = totalTimeSpentMillis / 60000
+    val secondsSpent = (totalTimeSpentMillis % 60000) / 1000
     val buttonColors = ButtonDefaults.buttonColors(backgroundColor = Blue500 , contentColor = Color.White)
     var isPrivate by remember { mutableStateOf(viewModel.uiState.value.isPrivate) }
     var studyDuration by remember { mutableStateOf(viewModel.uiState.value.studyDuration) }
@@ -192,30 +209,7 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
     ) {
         StudyRoomTitle(viewModel, isPrivate, roomName)
         Spacer(modifier = Modifier.height(50.dp))
-
-        Box(contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier.size(200.dp)) {
-
-                drawCircle(
-                    color = Color.LightGray,
-                    radius = size.minDimension / 2
-                )
-
-                val sweepAngle = 0.7f * 360f
-                drawArc(
-                    brush = SolidColor(Color.Blue),
-                    startAngle = -90f,
-                    sweepAngle = sweepAngle,
-                    useCenter = false,
-                    style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round),
-                    size = this.size
-                )
-            }
-            Text(
-                text = formatTime(timerState.progress),
-                style = MaterialTheme.typography.h4
-            )
-        }
+        TimerProgressIndicator(progress = timerState.progress, time = timerState.totalTime)
 
         TimerControlButtons(viewModel = viewModel)
 
@@ -230,7 +224,7 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Total time spent: "+timerState.totalTime,
+                text = "Time left : ${minutesSpent.formatTime()}:${secondsSpent.formatTime()}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = MaterialTheme.typography.subtitle1.fontSize * 1.35
@@ -263,15 +257,35 @@ fun SingleStudyScreen(viewModel: StudyViewModel = viewModel()) {
                 Text("Rest")
             }
         }
-
     }
 }
+fun Long.formatTime(): String = this.toString().padStart(2, '0')
 
-fun formatTime(min: Float): String {
-    val seconds = (min*60).toInt()
-    val minutes = (min %60).toInt()
-    val hours = (min %3600).toInt()
-    return String.format("%02d:%02d:%02d", hours,minutes, seconds)
+@Composable
+fun TimerProgressIndicator(progress: Float, time: String) {
+    Box(contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.size(200.dp)) {
+
+            drawCircle(
+                color = Color.LightGray,
+                radius = size.minDimension / 2
+            )
+
+            val sweepAngle = progress * 360f
+            drawArc(
+                brush = SolidColor(Color.Blue),
+                startAngle = -90f,
+                sweepAngle = sweepAngle,
+                useCenter = false,
+                style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round),
+                size = this.size
+            )
+        }
+        Text(
+            text = time,
+            style = MaterialTheme.typography.h4
+        )
+    }
 }
 
 @Composable
@@ -297,7 +311,6 @@ fun BottomStudyBar(navController: NavController) {
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -13,31 +13,30 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class StudyViewModel : ViewModel() {
 
-
     private val _uiState = MutableStateFlow(StudyUiState())
 
     val uiState: StateFlow<StudyUiState> = _uiState.asStateFlow()
 
+    private val _timerState = MutableStateFlow(TimerState())
+    val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
+
+    private var timerJob: Job? = null
 
     fun onIsPrivateChanged(isPrivate: Boolean) {
         _uiState.value = _uiState.value.copy(isPrivate = isPrivate)
     }
 
-
     fun onStudyDurationChanged(duration: String) {
         _uiState.value = _uiState.value.copy(studyDuration = duration)
     }
-
 
     fun onBreakDurationChanged(duration: String) {
         _uiState.value = _uiState.value.copy(breakDuration = duration)
     }
 
-
     fun onRoomNameChanged(name: String) {
         _uiState.value = _uiState.value.copy(roomName = name)
     }
-
     fun onPrivateChanged(bool:Boolean) {
         _uiState.value = _uiState.value.copy(isPrivate = bool)
     }
@@ -46,63 +45,41 @@ class StudyViewModel : ViewModel() {
         _uiState.value = _uiState.value.copy(password = password)
     }
 
-
-
-    private val _timerState = MutableStateFlow(TimerState())
-    val timerState: StateFlow<TimerState> = _timerState
-
-    private var timerJob: Job? = null
-
-
     fun onStartStudyingClicked() {
         startTimer()
     }
 
     fun startTimer() {
 
-        if (timerJob?.isActive != true) {
-            timerJob = viewModelScope.launch {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            val studyDurationMillis = _uiState.value.studyDuration.toLongOrNull()?.times(60 * 1000) ?: 0L
+            val startTime = System.currentTimeMillis()
+            val endTime = startTime + studyDurationMillis
 
-                val startTime = System.currentTimeMillis()
-                _timerState.value = _timerState.value.copy(startTime = startTime)
+            _timerState.value = _timerState.value.copy(startTime = startTime, duration = studyDurationMillis, isRunning = true)
 
-
-                val endTime = startTime + 30 * 60 * 1000
-
-                while (System.currentTimeMillis() < endTime) {
-                    val currentTime = System.currentTimeMillis()
-
-                    _timerState.value = _timerState.value.copy(
-                        timeInMillis = currentTime - startTime,
-                        isRunning = true
-                    )
-
-                    delay(1000)
-                }
-
-                pauseTimer()
+            while (System.currentTimeMillis() < endTime) {
+                val currentTime = System.currentTimeMillis()
+                _timerState.value = _timerState.value.copy(timeInMillis = currentTime - startTime)
+                delay(1000)
             }
         }
     }
-
-
 
     fun pauseTimer() {
         timerJob?.cancel()
         _timerState.value = _timerState.value.copy(isRunning = false)
     }
 
-
     fun resetTimer() {
-        timerJob?.cancel()
+        pauseTimer()
         _timerState.value = TimerState()
     }
 
-
-
     data class TimerState(
-        val startTime: Long = System.currentTimeMillis(),
-        val timeInMillis: Long = 0,
+        val startTime: Long = 0L,
+        val timeInMillis: Long = 0L,
         val duration: Long = 60 * 1000,
         val isRunning: Boolean = false
     ) {
