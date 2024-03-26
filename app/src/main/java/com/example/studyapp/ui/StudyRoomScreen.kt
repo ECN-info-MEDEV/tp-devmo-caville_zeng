@@ -3,9 +3,11 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -44,6 +46,8 @@ fun StudyRoomScreen(viewModel: StudyViewModel = viewModel(), navController: NavC
 
     val timerState = viewModel.timerState.collectAsState().value
 
+    val scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -57,9 +61,20 @@ fun StudyRoomScreen(viewModel: StudyViewModel = viewModel(), navController: NavC
                 }
             )
         },
-        bottomBar = { BottomStudyBar(navController) }
-    ) {
-        SingleRoomScreen(viewModel, timerState)
+        bottomBar = { BottomStudyBar() }
+    ) {innerPadding ->
+        LaunchedEffect(key1 = Unit) {
+            viewModel.restartTimer()
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SingleRoomScreen(viewModel, timerState)
+        }
     }
 }
 
@@ -146,7 +161,7 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
                 painter = painterResource(id = R.drawable.ic_reset),
                 contentDescription = "Reset Timer",
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(90.dp)
                     .padding(12.dp)
             )
         }
@@ -162,22 +177,22 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
         }
 
 
-        IconButton(onClick = { viewModel.startTimer() }) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_play),
-                contentDescription = "Play Timer",
-                modifier = Modifier
-                    .size(90.dp)
-                    .padding(12.dp)
-            )
-        }
+//        IconButton(onClick = { viewModel.startTimer() }) {
+//            Image(
+//                painter = painterResource(id = R.drawable.ic_play),
+//                contentDescription = "Play Timer",
+//                modifier = Modifier
+//                    .size(80.dp)
+//                    .padding(12.dp)
+//            )
+//        }
 
         IconButton(onClick = { viewModel.restartTimer() }) {
             Image(
                 painter = painterResource(id = R.drawable.ic_repeat),
                 contentDescription = "Start/Continue Timer",
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(90.dp)
                     .padding(12.dp)
             )
         }
@@ -185,6 +200,7 @@ fun TimerControlButtons(viewModel: StudyViewModel) {
 }
 
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun SingleRoomScreen(viewModel: StudyViewModel, timerState: StudyViewModel.TimerState) {
     val studyDurationMinutes = viewModel.uiState.collectAsState().value.studyDuration.toFloatOrNull() ?: 0f
@@ -206,65 +222,55 @@ fun SingleRoomScreen(viewModel: StudyViewModel, timerState: StudyViewModel.Timer
     var password by remember { mutableStateOf(viewModel.uiState.value.password) }
     val timerState by viewModel.timerState.collectAsState()
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.startTimer()
+
+    StudyRoomTitle(viewModel, isPrivate, roomName)
+    Spacer(modifier = Modifier.height(50.dp))
+    TimerProgressIndicator(progress = timerState.progress, time = timerState.totalTime)
+
+    TimerControlButtons(viewModel = viewModel)
+
+    Spacer(modifier = Modifier.height(50.dp))
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(Blue500)
+            .padding(8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Time left : ${minutesSpent.formatTime()}:${secondsSpent.formatTime()}",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = MaterialTheme.typography.subtitle1.fontSize * 1.35
+        )
     }
 
-    Column(
+    Spacer(modifier = Modifier.height(20.dp))
+
+    Row(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        StudyRoomTitle(viewModel, isPrivate, roomName)
-        Spacer(modifier = Modifier.height(50.dp))
-        TimerProgressIndicator(progress = timerState.progress, time = timerState.totalTime)
 
-        TimerControlButtons(viewModel = viewModel)
-
-        Spacer(modifier = Modifier.height(50.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(10.dp))
-                .background(Blue500)
-                .padding(8.dp),
-            contentAlignment = Alignment.Center
+        Button(
+            onClick = { viewModel.startTimer() },
+            colors = buttonColors,
+            modifier = Modifier.weight(1f)
         ) {
-            Text(
-                text = "Time left : ${minutesSpent.formatTime()}:${secondsSpent.formatTime()}",
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = MaterialTheme.typography.subtitle1.fontSize * 1.35
-            )
+            Text("Study")
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Button(
+            onClick = { viewModel.pauseTimer() },
+            colors = buttonColors,
+            modifier = Modifier.weight(1f)
         ) {
-
-            Button(
-                onClick = { viewModel.startTimer() },
-                colors = buttonColors,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Study")
-            }
-
-
-            Button(
-                onClick = { viewModel.pauseTimer() },
-                colors = buttonColors,
-                modifier = Modifier.weight(1f)
-            ) {
-                Text("Rest")
-            }
+            Text("Rest")
         }
     }
 }
@@ -298,7 +304,7 @@ fun TimerProgressIndicator(progress: Float, time: String) {
 }
 
 @Composable
-fun BottomStudyBar(navController: NavController) {
+fun BottomStudyBar() {
     var currentTab by remember {
         mutableStateOf(0)
     }
@@ -315,7 +321,7 @@ fun BottomStudyBar(navController: NavController) {
                 label = { Text(text = item.first) },
                 selected = currentTab == index,
                 onClick = { currentTab = index },
-                modifier = Modifier.size(24.dp)
+                //modifier = Modifier.size(24.dp)
             )
         }
     }
